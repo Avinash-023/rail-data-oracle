@@ -32,8 +32,9 @@ import {
 const mainMenuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Documents", url: "/documents", icon: FileText },
+  { title: "Alerts", url: "/alerts", icon: AlertTriangle },
+  { title: "Employees", url: "/employees", icon: Users },
   { title: "AI Assistant", url: "/chat", icon: MessageSquare },
-  { title: "Smart Search", url: "/search", icon: Search },
 ];
 
 const analyticsItems = [
