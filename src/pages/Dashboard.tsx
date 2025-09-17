@@ -56,10 +56,10 @@ const recentDocuments = [
 
 const quickActions = [
   {
-    title: "Upload Documents",
-    description: "Add new documents for processing",
-    icon: Upload,
-    action: "/documents/upload",
+    title: "Browse Documents",
+    description: "View and manage auto-synced documents",
+    icon: FileText,
+    action: "/documents",
     color: "bg-gradient-primary",
   },
   {
@@ -189,9 +189,9 @@ export default function Dashboard() {
                     type: "info",
                   },
                   {
-                    action: "Document uploaded",
+                    action: "Document auto-synced",
                     item: "Training Manual V2.docx",
-                    user: "HR Team",
+                    user: "Blob Storage",
                     time: "15 minutes ago",
                     type: "neutral",
                   },

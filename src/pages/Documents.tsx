@@ -22,7 +22,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useDropzone } from "react-dropzone";
 import { useToast } from "@/hooks/use-toast";
 
 const mockDocuments = [
@@ -107,27 +106,12 @@ export default function Documents() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { toast } = useToast();
 
-  const onDrop = (acceptedFiles: File[]) => {
+  const handleSyncNow = () => {
     toast({
-      title: "Files uploaded successfully",
-      description: `${acceptedFiles.length} file(s) added to processing queue`,
+      title: "Sync initiated",
+      description: "Checking Azure Blob Storage for new documents...",
     });
   };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "application/pdf": [".pdf"],
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-      "application/vnd.ms-excel": [".xls"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
-      "application/vnd.ms-powerpoint": [".ppt"],
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
-      "image/*": [".png", ".jpg", ".jpeg", ".tiff"],
-      "text/*": [".txt", ".csv"],
-    },
-  });
 
   const filteredDocuments = mockDocuments.filter((doc) => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -150,7 +134,7 @@ export default function Documents() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Documents</h1>
           <p className="text-muted-foreground mt-1">
-            Manage and process your document repository
+            Auto-synced documents from Azure Blob Storage
           </p>
         </div>
         
@@ -163,8 +147,8 @@ export default function Documents() {
             {viewMode === "grid" ? <List className="w-4 h-4" /> : <Grid className="w-4 h-4" />}
           </Button>
           <Button className="bg-gradient-primary hover:opacity-90">
-            <Upload className="w-4 h-4 mr-2" />
-            Upload Documents
+            <div className="w-2 h-2 bg-white/80 rounded-full animate-pulse mr-2"></div>
+            Auto-Sync Active
           </Button>
         </div>
       </div>
@@ -227,30 +211,30 @@ export default function Documents() {
         </Card>
       </div>
 
-      {/* Upload Area */}
+      {/* Auto-Sync Status */}
       <Card className="shadow-kmrl-md border-0 bg-gradient-secondary">
         <CardContent className="p-6">
-          <div
-            {...getRootProps()}
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
-              isDragActive 
-                ? "border-primary bg-primary/5" 
-                : "border-border hover:border-primary/50"
-            }`}
-          >
-            <input {...getInputProps()} />
-            <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-foreground">
-                {isDragActive ? "Drop files here" : "Upload Documents"}
-              </h3>
-              <p className="text-muted-foreground">
-                Drag and drop files or click to browse. Supports PDF, Word, Excel, PowerPoint, images, and text files.
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Maximum file size: 20MB • Batch upload supported
-              </p>
+          <div className="flex items-center justify-between p-4 bg-success/5 border border-success/20 rounded-lg">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
+                <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Azure Blob Storage Connected
+                </h3>
+                <p className="text-muted-foreground">
+                  Documents are automatically synced and processed from your blob storage. Last sync: 2 minutes ago
+                </p>
+              </div>
             </div>
+            <Button 
+              variant="outline" 
+              className="border-success/20 hover:bg-success/5"
+              onClick={handleSyncNow}
+            >
+              Sync Now
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -393,7 +377,7 @@ export default function Documents() {
               <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No documents found</h3>
               <p className="text-muted-foreground mb-4">
-                Try adjusting your search criteria or upload new documents.
+                Try adjusting your search criteria or check if blob storage sync is active.
               </p>
               <Button variant="outline">Clear Filters</Button>
             </div>
